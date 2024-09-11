@@ -37,6 +37,8 @@ dependencies:
   darwin:
     sourceware.org/bzip2: ^1
     zlib.net: ^1
+  linux:
+    gnu.org/gcc/libstdcxx: 14
 
 build:
   dependencies:

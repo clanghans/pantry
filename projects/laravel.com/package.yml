@@ -28,14 +28,15 @@ test:
   script:
     - laravel --version | grep {{version}}
     - laravel new blog --no-interaction
-    - run:
-        - php artisan serve --port=$PORT > server.log &
-        - PID=$!
-        - sleep 5
-        - curl http://localhost:$PORT
-        - curl -s http://localhost:$PORT | grep Laravel
-        - kill $PID
-        - grep 'Server running' server.log
-      working-directory: blog
+    - cd blog
+    # FIXME: this is producing some weird errors on linux/x86-64:
+    # /opt/php.net/v8.3.11/bin/php: /usr/lib/x86_64-linux-gnu/libstdc++.so.6: version `GLIBCXX_3.4.29' not found (required by /opt/php.net/v8.3.11/bin/php)
+    - pkgx +php.net +gnu.org/gcc/libstdcxx php artisan serve --port=$PORT | tee server.log &
+    - PID=$!
+    - sleep 5
+    - curl http://localhost:$PORT
+    - curl -s http://localhost:$PORT | grep Laravel
+    - kill $PID
+    - grep 'Server running' server.log
   env:
     PORT: $(pkgx get-port | tail -n1)
